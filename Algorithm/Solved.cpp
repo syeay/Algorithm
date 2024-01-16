@@ -1,3 +1,81 @@
+//24,01.16
+//백준 : 2178(미로 탐색)
+#if 0
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+int n, m, cnt = 0;
+vector<vector<int>> v;
+queue<pair<int, int>> q;
+vector<vector<int>> visited;
+vector<vector<int>> dist;
+
+// 위, 오른쪽, 아래, 왼쪽
+int dx[4] = { -1, 0, 1, 0 };
+int dy[4] = { 0, 1, 0, -1 };
+
+void bfs(int x, int y) {
+	q.push(pair<int, int>(x, y));
+	visited[x][y] = 1;
+	dist[x][y] = 1;
+
+	while (!q.empty()) {
+		int curx = q.front().first;
+		int cury = q.front().second;
+		q.pop();
+
+		for (int i = 0; i < 4; i++) {
+			int nx = curx + dx[i];
+			int ny = cury + dy[i];
+
+			if (nx >= n || nx < 0 || ny >= m || ny < 0) continue;
+			if (v[nx][ny] == 1 && visited[nx][ny] == 0) {
+				visited[nx][ny] = 1;
+				q.push(pair<int, int>(nx, ny));
+				dist[nx][ny] = dist[curx][cury] + 1;
+			}
+		}
+	}
+}
+
+int main() {
+	cin >> n >> m;
+	v.assign(n + 1, vector<int>(m));
+	dist.assign(n, vector<int>(m));
+	visited.assign(n, vector<int>(m, 0));
+
+	for (int i = 0; i < n; i++) {
+		string str;
+		cin >> str;
+		for (int j = 0; j < str.length(); j++) {
+			visited[i][j] = 0;
+			if (str[j] == '1')
+				v[i][j] = 1;
+			else
+				v[i][j] = 0;
+		}
+	}
+
+	bfs(0, 0);
+
+	cout << dist[n - 1][m - 1];
+	/*for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			cout << dist[i][j] << " ";
+		}
+		cout << endl;
+	}*/
+
+	return 0;
+}
+#endif
+
+
 //24.01.15
 //백준 : 24480(깊이우선탐색-2)
 #if 0
