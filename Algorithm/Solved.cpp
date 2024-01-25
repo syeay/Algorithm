@@ -1,3 +1,150 @@
+//24.01.25
+//백준 : 1012번(유기농 배추)
+#if 0
+#include <iostream>
+#include <queue>
+using namespace std;
+
+int t, m, n, k, cnt = 0;
+int map[51][51];
+int visited[51][51];
+queue<pair<int, int>> q;
+
+int dx[] = { -1, 0, 1, 0 };
+int dy[] = { 0, 1, 0, -1 };
+
+void reset() {
+	while (!q.empty()) q.pop();
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < n; j++) {
+			map[i][j] = 0;
+			visited[i][j] = 0;
+		}
+	}
+	cnt = 0;
+}
+
+void bfs(int x, int y) {
+	if (visited[x][y] == 1) return;
+	visited[x][y] = 1;
+	q.push({ x,y });
+	while (!q.empty()) {
+		int curx = q.front().first;
+		int cury = q.front().second;
+		q.pop();
+		for (int i = 0; i < 4; i++) {
+			int newx = curx + dx[i];
+			int newy = cury + dy[i];
+
+			if (newx < 0 || newx >= m || newy < 0 || newy >= n) continue;
+			if (map[newx][newy] == 1 && visited[newx][newy] == 0) {
+				visited[newx][newy] = 1;
+				q.push({ newx, newy });
+			}
+		}
+	}
+	cnt++;
+}
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+
+	cin >> t;
+	for (int i = 0; i < t; i++) {
+		cin >> m >> n >> k;
+		for (int j = 0; j < k; j++) {
+			int a, b;
+			cin >> a >> b;
+			map[a][b] = 1;
+		}
+
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				if (map[i][j] == 1)
+					bfs(i, j);
+			}
+		}
+
+		cout << cnt << "\n";
+		reset();
+	}
+}
+#endif
+//백준 : 7576번(토마토)
+#if 0
+#include <iostream>
+#include <queue>
+#include <algorithm>
+using namespace std;
+
+int m, n;
+bool bripe = true;
+int map[1001][1001];
+int visited[1001][1001];
+queue<pair<int, int>> q;
+vector<int> v;
+
+int dx[] = { -1, 0, 1, 0 };
+int dy[] = { 0, 1, 0, -1 };
+
+void bfs() {
+	while (!q.empty()) {
+		int curx = q.front().first;
+		int cury = q.front().second;
+		q.pop();
+		for (int i = 0; i < 4; i++) {
+			int newx = curx + dx[i];
+			int newy = cury + dy[i];
+			if (newx < 0 || newy < 0 || newx >= n || newy >= m) continue;
+			if (map[newx][newy] == 0 && visited[newx][newy] == 0) {
+				visited[newx][newy] = 1;
+				map[newx][newy] = map[curx][cury] + 1;
+				v.push_back(map[newx][newy]);
+				q.push({ newx, newy });
+			}
+		}
+	}
+}
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+
+	cin >> m >> n;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			cin >> map[i][j];
+			if (map[i][j] == 1) {
+				q.push({ i, j });
+				visited[i][j] = 1;
+			}
+		}
+	}
+	bfs();
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			if (map[i][j] == 0) {
+				bripe = false;
+				break;
+			}
+		}
+	}
+
+	if (!bripe)
+		cout << -1;
+	else if (v.size() == 0)
+		cout << 0;
+	else {
+		sort(v.begin(), v.end(), greater<int>());
+		cout << v[0] - 1;
+	}
+}
+#endif
+
 //24.01.24
 //백준 : 7562(나이트의 이동)
 #if 0
@@ -142,7 +289,6 @@ int main() {
 }
 #endif
 
-
 //24.01.15
 //백준 : 24480(깊이우선탐색-2)
 #if 0
@@ -197,7 +343,6 @@ int main() {
 	return 0;
 }
 #endif
-
 // 백준 : 2667(단지 번호 붙이기)
 #if 0
 #include <iostream>

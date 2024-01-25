@@ -1,62 +1,69 @@
 #include <iostream>
 #include <queue>
+#include <algorithm>
 using namespace std;
 
-int n, l;
-int cur_x, cur_y;
-int tar_x, tar_y;
-int map[301][301];
-int visited[301][301];
+int m, n;
+bool bripe = true;
+int map[1001][1001];
+int visited[1001][1001];
 queue<pair<int, int>> q;
+vector<int> v;
 
-int dx[] = {1, 2, 2, 1, -1, -2, -2, -1};
-int dy[] = {2, 1, -1, -2, -2, -1, 1, 2};
+int dx[] = {-1, 0, 1, 0};
+int dy[] = {0, 1, 0, -1};
 
-void reset() {
-	while(!q.empty()) q.pop();
-	for (int i = 0; i < 301; i++) {
-		for (int j = 0; j < 301; j++) {
-			visited[i][j]= 0;
-			map[i][j] = 0;
-		}
-	}
-}
-
-void bfs(int x, int y) {
-	q.push({x, y});
-	visited[x][y] = 1;
+void bfs() {
 	while (!q.empty()) {
-		int a = q.front().first;
-		int b = q.front().second;
+		int curx = q.front().first;
+		int cury = q.front().second;
 		q.pop();
-		if (a == tar_x && b == tar_y) {
-			cout << map[a][b] << "\n";
-			while (!q.empty()) {
-				q.pop();
-			}
-			break;
-		}
-		for (int i = 0; i < 8; i++) {
-			int new_a = a + dx[i];
-			int new_b = b + dy[i];
-			if (new_a < 0 || new_a >= l || new_b <0 || new_b >= l) continue;
-			if (visited[new_a][new_b] == 0) {
-				q.push({new_a, new_b});
-				visited[new_a][new_b] = 1;
-				map[new_a][new_b] = map[a][b]+1;
+		for (int i = 0; i < 4; i++) {
+			int newx = curx + dx[i];
+			int newy = cury + dy[i];
+			if (newx<0 || newy<0 || newx>=n || newy>=m) continue;
+			if (map[newx][newy] == 0 && visited[newx][newy] == 0) {
+				visited[newx][newy] = 1;
+				map[newx][newy] = map[curx][cury] + 1;
+				v.push_back(map[newx][newy]);
+				q.push({newx, newy});
 			}
 		}
 	}
 }
 
 int main() {
-	cin >> n;
-	for (int i = 0; i < n; i++) {
-		cin >> l;
-		cin >> cur_x >> cur_y;
-		cin >> tar_x >> tar_y;
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
 
-		bfs(cur_x, cur_y);
-		reset();
-	}	
+	cin >> m >> n;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			cin >> map[i][j];
+			if (map[i][j] == 1) {
+				q.push({i, j});
+				visited[i][j] = 1;
+			}			
+		}
+	}
+	bfs();
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			if (map[i][j] == 0){
+				bripe = false;
+				break;
+			}
+		}
+	}
+
+	if (!bripe)
+		cout << -1;
+	else if (v.size() == 0)
+		cout << 0;
+	else {
+		sort(v.begin(), v.end(), greater<int>());
+		cout << v[0] - 1;
+	}
 }
