@@ -1,32 +1,38 @@
 #include <iostream>
 #include <queue>
 #include <algorithm>
+#include <tuple>
 using namespace std;
 
-int m, n;
+int n, m, h;
 bool bripe = true;
-int map[1001][1001];
-int visited[1001][1001];
-queue<pair<int, int>> q;
+int map[101][101][101];
+int visited[101][101][101];
+queue<tuple<int, int, int>> q;
 vector<int> v;
 
-int dx[] = {-1, 0, 1, 0};
-int dy[] = {0, 1, 0, -1};
+int dx[] = {-1, 0, 1, 0, 0, 0};
+int dy[] = {0, -1, 0, 1, 0, 0};
+int dz[] = {0, 0, 0, 0, -1, 1};
 
 void bfs() {
 	while (!q.empty()) {
-		int curx = q.front().first;
-		int cury = q.front().second;
+		int a = get<0>(q.front());
+		int b = get<1>(q.front());
+		int c = get<2>(q.front());
 		q.pop();
-		for (int i = 0; i < 4; i++) {
-			int newx = curx + dx[i];
-			int newy = cury + dy[i];
-			if (newx<0 || newy<0 || newx>=n || newy>=m) continue;
-			if (map[newx][newy] == 0 && visited[newx][newy] == 0) {
-				visited[newx][newy] = 1;
-				map[newx][newy] = map[curx][cury] + 1;
-				v.push_back(map[newx][newy]);
-				q.push({newx, newy});
+
+		for (int i = 0; i < 6; i++) {
+			int na = a+dx[i];
+			int nb = b+dy[i];
+			int nc = c+dz[i];
+
+			if (na<0 || nb<0 || nc<0 || na>=h || nb>=n || nc>=m) continue;
+			if (map[na][nb][nc] == 0 && visited[na][nb][nc] == 0) {
+				visited[na][nb][nc] = 1;
+				q.push({na, nb, nc});
+				map[na][nb][nc] = map[a][b][c] + 1;
+				v.push_back(map[na][nb][nc]);
 			}
 		}
 	}
@@ -34,36 +40,43 @@ void bfs() {
 
 int main() {
 	ios::sync_with_stdio(0);
-	cin.tie(0);
-	cout.tie(0);
-
-	cin >> m >> n;
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < m; j++) {
-			cin >> map[i][j];
-			if (map[i][j] == 1) {
-				q.push({i, j});
-				visited[i][j] = 1;
-			}			
-		}
-	}
-	bfs();
-
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < m; j++) {
-			if (map[i][j] == 0){
-				bripe = false;
-				break;
+	cin.tie(0); cout.tie(0);
+	// 높이, 세로, 가로
+	cin >> m >> n >> h;
+	for (int i = 0; i < h; i++) {
+		for (int j = 0; j < n; j++) {
+			for (int k = 0; k < m; k++) {
+				cin >> map[i][j][k];
+				if (map[i][j][k] == 1) {
+					q.push({i, j, k});
+					visited[i][j][k] = 1;
+				}
 			}
 		}
 	}
 
-	if (!bripe)
-		cout << -1;
-	else if (v.size() == 0)
-		cout << 0;
+	bfs();
+
+	for (int i = 0; i < h; i++) {
+		for (int j = 0; j < n; j++) {
+			for (int k = 0; k < m; k++) {
+				if (map[i][j][k] == 0) {
+					bripe = false;
+					break;
+				}
+				//cout << map[i][j][k] << " ";
+			}
+			//cout << "\n";
+		}
+		//cout << "\n";
+	}
+
+	if (!bripe) cout << -1;
+	else if (v.size() == 0) cout << 0;
 	else {
 		sort(v.begin(), v.end(), greater<int>());
-		cout << v[0] - 1;
+		cout << v[0]-1;
 	}
+
+	return 0;
 }
