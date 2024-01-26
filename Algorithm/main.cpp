@@ -4,79 +4,84 @@
 #include <tuple>
 using namespace std;
 
-int n, m, h;
-bool bripe = true;
-int map[101][101][101];
-int visited[101][101][101];
-queue<tuple<int, int, int>> q;
-vector<int> v;
+int n, m;
+int map[1001][1001];
+int visited[1001][1001][2];
 
-int dx[] = {-1, 0, 1, 0, 0, 0};
-int dy[] = {0, -1, 0, 1, 0, 0};
-int dz[] = {0, 0, 0, 0, -1, 1};
+int dx[] = { -1, 0, 1, 0 };
+int dy[] = { 0, -1, 0, 1 };
+
+
+struct Road
+{
+	int x, y, op;
+	Road(int a, int b, int c) {
+		x = a; y = b; op = c;
+	}
+};
+
+queue<Road> q;
 
 void bfs() {
 	while (!q.empty()) {
-		int a = get<0>(q.front());
-		int b = get<1>(q.front());
-		int c = get<2>(q.front());
+		int a = q.front().x;
+		int b = q.front().y;
+		int op = q.front().op;
 		q.pop();
 
-		for (int i = 0; i < 6; i++) {
-			int na = a+dx[i];
-			int nb = b+dy[i];
-			int nc = c+dz[i];
+		for (int i = 0; i < 4; i++) {
+			int na = a + dx[i];
+			int nb = b + dy[i];
 
-			if (na<0 || nb<0 || nc<0 || na>=h || nb>=n || nc>=m) continue;
-			if (map[na][nb][nc] == 0 && visited[na][nb][nc] == 0) {
-				visited[na][nb][nc] = 1;
-				q.push({na, nb, nc});
-				map[na][nb][nc] = map[a][b][c] + 1;
-				v.push_back(map[na][nb][nc]);
+			if (na < 0 || nb < 0 || na >= n || nb >= m) continue;
+			if (op == 1) {
+				if (visited[na][nb][1] == 0 && map[na][nb] == 0) {
+					visited[na][nb][1] = visited[a][b][1] + 1;
+					q.push(Road(na, nb, 1));
+				}
+				else if (visited[na][nb][1] == 0 && map[na][nb] == 1) {
+					visited[na][nb][0] = visited[a][b][1] + 1;
+					q.push(Road(na, nb, 0));
+				}
+			}
+			else {
+				if (visited[na][nb][0] == 0 && map[na][nb] == 0) {
+					visited[na][nb][0] = visited[a][b][0] + 1;
+					q.push(Road(na, nb, 0));
+				}
 			}
 		}
 	}
 }
 
 int main() {
-	ios::sync_with_stdio(0);
-	cin.tie(0); cout.tie(0);
-	// 높이, 세로, 가로
-	cin >> m >> n >> h;
-	for (int i = 0; i < h; i++) {
-		for (int j = 0; j < n; j++) {
-			for (int k = 0; k < m; k++) {
-				cin >> map[i][j][k];
-				if (map[i][j][k] == 1) {
-					q.push({i, j, k});
-					visited[i][j][k] = 1;
-				}
-			}
+	cin >> n >> m;
+	for (int i = 0; i < n; i++) {
+		string str;
+		cin >> str;
+		for (int j = 0; j < m; j++) {
+			if (str[j] == '0') map[i][j] = 0;
+			else map[i][j] = 1;
 		}
 	}
+	if (n==1 && m==1) {
+		cout << 1;
+		return 0;
+	}
 
+	q.push(Road(0,0,1));
+	visited[0][0][1] = 1;
 	bfs();
 
-	for (int i = 0; i < h; i++) {
-		for (int j = 0; j < n; j++) {
-			for (int k = 0; k < m; k++) {
-				if (map[i][j][k] == 0) {
-					bripe = false;
-					break;
-				}
-				//cout << map[i][j][k] << " ";
-			}
-			//cout << "\n";
-		}
-		//cout << "\n";
-	}
-
-	if (!bripe) cout << -1;
-	else if (v.size() == 0) cout << 0;
+	// 뚫지 않았을 때
+	int a = visited[n-1][m-1][1];
+	// 뚫었을 때
+	int b = visited[n-1][m-1][0];
+	if (a == 0 && b == 0) cout << -1;
 	else {
-		sort(v.begin(), v.end(), greater<int>());
-		cout << v[0]-1;
+		if (a == 0) cout << b;
+		else if (b == 0) cout << a;
+		else if (b <= a) cout << b;
+		else cout << a;
 	}
-
-	return 0;
 }
