@@ -1,3 +1,47 @@
+//24.01.28
+//백준 : 11478번(서로 다른 부분 문자열의 개수)
+#if 0
+#include <iostream>
+#include <string>
+#include <unordered_set>
+//#include <ctime>
+using namespace std;
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	//clock_t start, finish;
+	//double duration;
+	//start = clock();
+	string str;
+	unordered_set<string> s;
+	cin >> str;
+	for (int i = 0; i < str.size(); i++) {
+		string tmp = { str[i] };
+		for (int j = i; j < str.size(); j++) {
+			s.insert(tmp);
+			tmp += str[j + 1];
+			//s.insert(str.substr(j, i));
+		}
+	}
+
+	cout << s.size();
+	//finish = clock();
+	//duration = (double)(finish - start);
+	//cout << duration << "초" << endl;
+}
+#endif
+//시간 계산 코드
+#if 0
+#include <ctime>
+clock_t start, finish;
+double duration;
+start = clock();
+finish = clock();
+duration = (double)(finish - start);
+cout << duration << "ms초" << endl;
+#endif // 0
+
 //24.01.26
 //백준 : 7569번(토마토 3차원)
 #if 0
@@ -84,7 +128,6 @@ int main() {
 	return 0;
 }
 #endif
-
 //백준 : 2206번(벽 부수고 이동하기)
 #if 0
 #include <iostream>
@@ -175,8 +218,6 @@ int main() {
 	}
 }
 #endif
-
-
 
 //24.01.25
 //백준 : 1012번(유기농 배추)
