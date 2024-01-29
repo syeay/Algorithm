@@ -1,4 +1,87 @@
 //24.01.28
+//백준 : 15649번(N과 M _1)
+#if 0
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int n, m;
+int map[9];
+int visited[9];
+vector<int> v;
+
+void dfs(int cnt) {
+	if (cnt == m) {
+		for (int i = 0; i < v.size(); i++)
+			cout << v[i] << " ";
+		cout << "\n";
+		return;
+	}
+
+	for (int i = 0; i < n; i++) {
+		if (visited[i] == 1) continue;
+		visited[i] = 1;
+		v.push_back(map[i]);
+		dfs(cnt + 1);
+		v.pop_back();
+		visited[i] = 0;
+	}
+}
+
+int main() {
+	cin >> n >> m;
+	for (int i = 0; i < n; i++) {
+		map[i] = i + 1;
+	}
+
+	dfs(0);
+
+	return 0;
+}
+#endif // 0
+//백준 : 15650번(N과 M _2)
+#if 0
+#include <iostream>
+#include <vector>
+#include <queue>
+using namespace std;
+
+int n, m;
+int map[9];
+int visited[9];
+vector<int> v;
+queue<int> q;
+
+void dfs(int num, int cnt) {
+	if (cnt == m) {
+		for (int i = 0; i < v.size(); i++) {
+			cout << v[i] << " ";
+		}
+		cout << "\n";
+		return;
+	}
+
+	for (int i = num; i < n; i++) {
+		if (visited[i] == 1) continue;
+		visited[i] = 1;
+		v.push_back(map[i]);
+		dfs(i + 1, cnt + 1);
+		v.pop_back();
+		visited[i] = 0;
+	}
+}
+
+int main() {
+	cin >> n >> m;
+	for (int i = 0; i < n; i++) {
+		map[i] = i + 1;
+	}
+
+	dfs(0, 0);
+}
+#endif // 0
+
+//24.01.28
 //백준 : 11478번(서로 다른 부분 문자열의 개수)
 #if 0
 #include <iostream>
