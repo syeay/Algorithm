@@ -1,93 +1,68 @@
 #include <iostream>
-#include <queue>
-#include <map>
+#include <vector>
 #include <algorithm>
 using namespace std;
 
-int n, m, s, e;
-int cnt1, cnt2;
-vector<vector<int>> vec;
-//vector<vector<int>> check;
-//int map[10001][10001];
-vector<int> resetVec;
-int visited[10001];
-int check[10001];
-queue<int> q;
-map<int, int> mp;
-
-void bfs(int num) {
-	if (visited[num] != 0) return;
-	visited[num] = 1;
-	q.push(num);
-	check[num] = 0;
-
-	while (!q.empty()) {
-		int cur = q.front();
-		if (num == s && cur == e) break;
-		if (num == e && cur == s) 
-			break;
-		q.pop();
-
-		for (int i = 0; i < vec[cur].size(); i++) {
-			int next = vec[cur][i];
-			if (!visited[next]) {
-				visited[next] = 1;
-				check[next] = check[cur] + 1; 
-				if (mp.find(check[next]) != mp.end()) 
-					resetVec.push_back(next);
-				else mp.insert(make_pair(check[next], next));
-				q.push(next);
-			}
-		}
-	}
-
-	if (resetVec.size() != 0) {
-		for (int i = 0; i < resetVec.size(); i++) {
-			visited[resetVec[i]] = 0;
-		}
-	}
-
-	if (!q.empty()) {
-		while (!q.empty()) {
-			int a = q.front();
-			visited[a] = 0;
-			q.pop();
-		}
-	}
-	if (num == s) {
-		cnt1 = check[e];
-		visited[s] = 0;
-		visited[e] = 0;
-	}
-	else cnt2 = check[s];
-}
+// 도시 n 여행일 수 m
+long long n, m;
+// 경로 도시 배열
+vector<long long> path;
+// 도로 별 구입비 등이 들어간 2차원 배열
+vector<vector<long long>> fare;
 
 int main() {
 	ios::sync_with_stdio(0); cin.tie(0);
 	cin >> n >> m;
-	vec.assign(n+1, vector<int>());	
-	//check.assign(n+1, vector<int>());	
+	fare.assign(n+1, vector<long long>());
+	path.assign(m, 0);
 
-	for (int i = 0; i < m; i++) {
-		int a, b;
-		cin >> a >> b;
-		vec[a].push_back(b);
-		vec[b].push_back(a);
-	}
-	cin >> s >> e;
-
-	for (int i = 0; i < vec[i].size(); i++) {
-		sort(vec[i].begin(), vec[i].end());
+	for (long long i = 0; i < m; i++) {
+		// i일 째 이동하는 도시
+		long long a;
+		cin >> a;
+		path[i] = a;
 	}
 
-	bfs(s);
-	bfs(e);
-
-	/*for (int i = 0; i <= n; i++) {
-		cout << check[i] << " ";
+	for (long long i = 1; i < n; i++) {
+		// i의 티켓 구입비, 카드 사용비, 카드 구매비
+		long long a, b, c;
+		cin >> a >> b >> c;
+		fare[i].push_back(a);
+		fare[i].push_back(b);
+		fare[i].push_back(c);
+		fare[i].push_back(0);
 	}
 
-	cout << "\n" << cnt1;*/
-	cout << cnt1 + cnt2;
+	for (long long i = 1; i < m; i++) {
+		long long a = path[i - 1];
+		long long b = path[i];
+		if (a < b) {
+			// 자신을 포함해 a개의 도로를 지남
+			while (b != a) {
+				fare[a][3]++;
+				a++;
+			}
+		}
+		else {
+			while (b != a) {
+				fare[b][3]++;
+				b++;
+			}
+		}
+	}
 
+	long long answer = 0;
+	for (long long i = 1; i < n; i++) {
+		if (fare[i][3] != 0) {
+			long long a = fare[i][3] * fare[i][0];
+			long long b = fare[i][3] * fare[i][1] + fare[i][2];
+
+			if (a <= b)
+				answer += a;
+			else
+				answer += b;
+		}
+	}
+	
+	cout << answer;
 }

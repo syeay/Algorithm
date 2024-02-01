@@ -1,4 +1,158 @@
-//24.01.28
+//24.02.01
+//백준 : 10713번(기차여행)
+#if 0
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+// 도시 n 여행일 수 m
+long long n, m;
+// 경로 도시 배열
+vector<long long> path;
+// 도로 별 구입비 등이 들어간 2차원 배열
+vector<vector<long long>> fare;
+
+int main() {
+	ios::sync_with_stdio(0); cin.tie(0);
+	cin >> n >> m;
+	fare.assign(n + 1, vector<long long>());
+	path.assign(m, 0);
+
+	for (long long i = 0; i < m; i++) {
+		// i일 째 이동하는 도시
+		long long a;
+		cin >> a;
+		path[i] = a;
+	}
+
+	for (long long i = 1; i < n; i++) {
+		// i의 티켓 구입비, 카드 사용비, 카드 구매비
+		long long a, b, c;
+		cin >> a >> b >> c;
+		fare[i].push_back(a);
+		fare[i].push_back(b);
+		fare[i].push_back(c);
+		fare[i].push_back(0);
+	}
+
+	for (long long i = 1; i < m; i++) {
+		long long a = path[i - 1];
+		long long b = path[i];
+		if (a < b) {
+			// 자신을 포함해 a개의 도로를 지남
+			while (b != a) {
+				fare[a][3]++;
+				a++;
+			}
+		}
+		else {
+			while (b != a) {
+				fare[b][3]++;
+				b++;
+			}
+		}
+	}
+
+	long long answer = 0;
+	for (long long i = 1; i < n; i++) {
+		if (fare[i][3] != 0) {
+			long long a = fare[i][3] * fare[i][0];
+			long long b = fare[i][3] * fare[i][1] + fare[i][2];
+
+			if (a <= b)
+				answer += a;
+			else
+				answer += b;
+		}
+	}
+
+	cout << answer;
+}
+#endif // 0
+
+
+//24.01.31
+//백준 : 22868번(산책)
+#if 0
+#include <iostream>
+#include <queue>
+#include <algorithm>
+using namespace std;
+
+int n, m, s, e;
+int cnt1, cnt2;
+vector<vector<int>> vec;
+int visited[10001];
+int check[10001];
+queue<pair<int, int>> q;
+
+void reset() {
+	while (!q.empty()) q.pop();
+	for (int i = 1; i <= n; i++) {
+		visited[i] = 0;
+	}
+	int a = check[e];
+
+	while (1) {
+		visited[a] = 1;
+		a = check[a];
+		if (a == 0) break;
+	}
+}
+
+int bfs(int a, int b) {
+	visited[a] = 1;
+	q.push({ a, 0 });
+
+	while (!q.empty()) {
+		int cur = q.front().first;
+		int cnt = q.front().second;
+		q.pop();
+
+		for (int i = 0; i < vec[cur].size(); i++) {
+			int next = vec[cur][i];
+			if (!visited[next]) {
+				visited[next] = 1;
+				check[next] = cur;
+				q.push(make_pair(next, cnt + 1));
+			}
+			if (next == b)
+				return cnt + 1;
+		}
+	}
+
+	return 0;
+}
+
+int main() {
+	ios::sync_with_stdio(0); cin.tie(0);
+	cin >> n >> m;
+	vec.assign(n + 1, vector<int>());
+
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		cin >> a >> b;
+		vec[a].push_back(b);
+		vec[b].push_back(a);
+	}
+	cin >> s >> e;
+
+	for (int i = 1; i <= n; i++) {
+		sort(vec[i].begin(), vec[i].end());
+	}
+
+	int a = bfs(s, e);
+	reset();
+	int b = bfs(e, s);
+
+	cout << a + b;
+	return 0;
+}
+
+#endif // 0
+
+//24.01.29
 //백준 : 15649번(N과 M _1)
 #if 0
 #include <iostream>
