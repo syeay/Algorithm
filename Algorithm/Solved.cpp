@@ -1,3 +1,37 @@
+//24.02.02
+//백준 : 11656번(접미사 배열)
+#if 0
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+
+int main() {
+	string str;
+	cin >> str;
+
+	vector<string> v;
+	//v.assign(str.length()+1, "");
+
+	for (int i = 0; i < str.length(); i++) {
+		string newstr;
+		for (int j = i; j < str.length(); j++) {
+			newstr += str[j];
+		}
+		v.push_back(newstr);
+	}
+
+	sort(v.begin(), v.end());
+
+	for (int i = 0; i < v.size(); i++) {
+		cout << v[i] << "\n";
+	}
+}
+#endif // 0
+
+
 //24.02.01
 //백준 : 10713번(기차여행)
 #if 0
