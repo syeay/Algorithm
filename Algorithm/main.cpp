@@ -3,33 +3,30 @@
 
 using namespace std;
 
-int n;
-int arr[301][301];
-int psum[301][301];
-
-void Solve() {
-	int answer = -1001;
-	for (int i = 1; i <= n; i++) {
-		for (int j = 1; j <= n; j++) {
-			for (int k = 1; k <= n; k++) {
-				if (i-k<0 || j-k<0) break;
-				else {
-					answer = max(answer, psum[i][j]-psum[i-k][j]-psum[i][j-k]+psum[i-k][j-k]);
-				}
-			}
-		}
-	}
-	cout << answer;
-}
+int n, k;
+long long cnt = 0;
+int psum[200001];
+map
 
 int main() {
-	cin >> n;
+	cin >> n >> k;
 	for (int i = 1; i <= n; i++) {
-		for (int j = 1; j <= n; j++) {			
-			cin >> arr[i][j];
-			psum[i][j] = psum[i][j-1]+psum[i-1][j]+arr[i][j]-psum[i-1][j-1];
+		int a;
+		cin >> a;
+		psum[i] = psum[i-1] + a;
+	}
+
+	for (int i = 0; i < n; i++) {
+		int answer = 0;
+		for (int j = i; j < n; j++) {
+			// i~j까지의 누적합이 k일 경우
+			// i까지의 누적합 - k = j까지의 누적합
+			answer += 
+			if (psum[i]- k == psum[j]) cnt++;
 		}
 	}
 
-	Solve();
+	
+
+	cout << cnt;
 }
