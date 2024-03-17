@@ -1,2 +1,3 @@
 ﻿  main.cpp
-  Algorithm.vcxproj -> C:\Users\3hyou\OneDrive\문서\Algorithm\x64\Debug\Algorithm.exe
+E:\Algorithm\Algorithm\main.cpp(7,8): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Algorithm.vcxproj -> E:\Algorithm\x64\Debug\Algorithm.exe

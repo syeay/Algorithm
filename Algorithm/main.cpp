@@ -1,55 +1,43 @@
-#include <iostream>
-#include <string>
 #include <vector>
-//#include <ctime>
+#include <algorithm>
+#include <iostream>
 using namespace std;
 
-int main() {
-	ios::sync_with_stdio(0);
-	cin.tie(0);
+int solution(vector<int>& A) {
+	int n = A.size();
+	if (n <= 2) return 0;
 
-	vector<int>  v;
-	v.assign(7, 0);
-	int cnt = 0;
+	vector<int> sumTile;
+	sumTile.assign(n, 0);
 
-	for (int i = 0; i < 24; i++) {
-		string a;
-		cin >> a;
-		if (a != "")
-			cnt++;
-		if (a == "Re") {
-			v[0] += 1;
-		}
-		else if (a == "Pt") {
-			v[1] += 1;
-		}
-		else if (a == "Cc") {
-			v[2] += 1;
-		}
-		else if (a == "Ea") {
-			v[3] += 1;
-		}
-		else if (a == "Tb") {
-			v[4] += 1;
-		}
-		else if (a == "Cm") {
-			v[5] += 1;
-		}
-		else if (a == "Ex") {
-			v[6] += 1;
-		}
-		else
-			continue;
+	for (int i = 1; i < n; i++) {
+		sumTile[i] = A[i] + A[i-1];
+	}
+	
+	vector<int> map;
+	map.assign(n, 0);
+	map[1] = sumTile[1];
+
+	for (int i = 2; i < n; i++) {
+		map[i] = max(map[i-1], sumTile[i]);
+		if (i >2)
+			map[i] = max(map[i], map[i-3] + sumTile[i]);
 	}
 
-	cout << fixed;
-	cout.precision(2);
-	cout << "Re " << v[0] << " " << v[0] / (double)cnt << "\n";
-	cout << "Pt " << v[1] << " " << v[1] / (double)cnt << "\n";
-	cout << "Cc " << v[2] << " " << v[2] / (double)cnt << "\n";
-	cout << "Ea " << v[3] << " " << v[3] / (double)cnt << "\n";
-	cout << "Tb " << v[4] << " " << v[4] / (double)cnt << "\n";
-	cout << "Cm " << v[5] << " " << v[5] / (double)cnt << "\n";
-	cout << "Ex " << v[6] << " " << v[6] / (double)cnt << "\n";
-	cout << "Total " << cnt << " 1.00";
+	int answer = map[n-1];
+	for (int i = n - 1; i > 2; i--) {
+		if (i >= 4)
+			answer = max(answer, map[i-4] + sumTile[i]);
+		answer = max(answer, map[i-2] + sumTile[i]);
+	}
+	
+	for (int i = 0; i < map.size(); i++) {
+		cout << map[i] << " ";
+	}
+	return answer;
+}
+
+int main() {
+	vector<int> a = { 1, 2, 3, 3, 2 };
+	solution(a);
 }
